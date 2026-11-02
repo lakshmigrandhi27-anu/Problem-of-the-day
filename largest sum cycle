@@ -1,0 +1,32 @@
+class Solution {
+    public int largestSumCycle(int[] edge) {
+        int n = edge.length;
+        int[] visitId = new int[n];
+        int[] depth = new int[n];
+        long maxSum = -1;
+        int id = 0;
+        for (int i = 0; i < n; i++) {
+            if (visitId[i] != 0) {
+                continue;
+            }
+            id++;
+            int curr = i;
+            int count = 0;
+            while (curr != -1 && visitId[curr] == 0) {
+                visitId[curr] = id;
+                depth[curr] = count++;
+                curr = edge[curr];
+            }
+            if (curr != -1 && visitId[curr] == id) {
+                long sum = 0;
+                int node = curr;
+                do {
+                    sum += node;
+                    node = edge[node];
+                } while (node != curr);
+                maxSum = Math.max(maxSum, sum);
+            }
+        }
+        return (int) maxSum;
+    }
+}
