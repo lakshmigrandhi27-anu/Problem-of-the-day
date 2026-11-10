@@ -1,0 +1,44 @@
+import java.util.HashMap;
+import java.util.Map;
+
+class Solution {
+    // Array-based approach (optimal for 0 <= arr[i] <= 10^6)
+    public int firstElementKTime(int[] arr, int k) {
+        // Special case: if k == 1, the very first element qualifies immediately
+        if (k == 1) {
+            return arr[0];
+        }
+
+        // Constraints specify 0 <= arr[i] <= 10^6
+        int[] freq = new int[1000001];
+
+        for (int num : arr) {
+            freq[num]++;
+            if (freq[num] == k) {
+                return num;
+            }
+        }
+
+        return -1;
+    }
+
+    // Alternative: HashMap approach (works regardless of upper bound on arr[i])
+    public int firstElementKTimeMap(int[] arr, int k) {
+        if (k == 1) {
+            return arr[0];
+        }
+
+        Map<Integer, Integer> freq = new HashMap<>();
+
+        for (int num : arr) {
+            int currentCount = freq.getOrDefault(num, 0) + 1;
+            freq.put(num, currentCount);
+
+            if (currentCount == k) {
+                return num;
+            }
+        }
+
+        return -1;
+    }
+}
