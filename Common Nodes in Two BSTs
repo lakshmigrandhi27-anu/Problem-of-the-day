@@ -1,0 +1,71 @@
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+
+/*
+class Node {
+    int data;
+    Node left, right;
+
+    Node(int data) {
+        this.data = data;
+        left = null;
+        right = null;
+    }
+}
+*/
+
+class Solution {
+    // Function to find the nodes that are common in both BST.
+    public static ArrayList<Integer> findCommon(Node r1, Node r2) {
+        ArrayList<Integer> result = new ArrayList<>();
+        Deque<Node> s1 = new ArrayDeque<>();
+        Deque<Node> s2 = new ArrayDeque<>();
+
+        Node curr1 = r1;
+        Node curr2 = r2;
+
+        while (true) {
+            // Reach the leftmost node of current subtree in BST 1
+            while (curr1 != null) {
+                s1.push(curr1);
+                curr1 = curr1.left;
+            }
+
+            // Reach the leftmost node of current subtree in BST 2
+            while (curr2 != null) {
+                s2.push(curr2);
+                curr2 = curr2.left;
+            }
+
+            // If either stack is empty, no more common nodes can exist
+            if (s1.isEmpty() || s2.isEmpty()) {
+                break;
+            }
+
+            Node top1 = s1.peek();
+            Node top2 = s2.peek();
+
+            if (top1.data == top2.data) {
+                // Common node found
+                result.add(top1.data);
+                s1.pop();
+                s2.pop();
+
+                // Move to right subtrees of both nodes
+                curr1 = top1.right;
+                curr2 = top2.right;
+            } else if (top1.data < top2.data) {
+                // Advance BST 1 to the next larger element
+                s1.pop();
+                curr1 = top1.right;
+            } else {
+                // Advance BST 2 to the next larger element
+                s2.pop();
+                curr2 = top2.right;
+            }
+        }
+
+        return result;
+    }
+}
