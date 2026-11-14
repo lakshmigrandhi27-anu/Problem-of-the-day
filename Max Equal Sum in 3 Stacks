@@ -1,0 +1,35 @@
+import java.util.List;
+
+class Solution {
+    public static int maxEqualSum(List<Integer> s1, List<Integer> s2, List<Integer> s3) {
+        int sum1 = 0, sum2 = 0, sum3 = 0;
+
+        // Calculate initial sums of all three stacks
+        for (int x : s1) sum1 += x;
+        for (int x : s2) sum2 += x;
+        for (int x : s3) sum3 += x;
+
+        int p1 = 0, p2 = 0, p3 = 0;
+        int n1 = s1.size(), n2 = s2.size(), n3 = s3.size();
+
+        while (p1 < n1 && p2 < n2 && p3 < n3) {
+            // If all sums are equal, return the sum
+            if (sum1 == sum2 && sum2 == sum3) {
+                return sum1;
+            }
+
+            // Reduce the stack that has the maximum sum
+            if (sum1 >= sum2 && sum1 >= sum3) {
+                sum1 -= s1.get(p1++);
+            } 
+            else if (sum2 >= sum1 && sum2 >= sum3) {
+                sum2 -= s2.get(p2++);
+            } 
+            else if (sum3 >= sum1 && sum3 >= sum2) {
+                sum3 -= s3.get(p3++);
+            }
+        }
+
+        return 0;
+    }
+}
