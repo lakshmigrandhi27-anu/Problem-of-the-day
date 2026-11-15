@@ -1,0 +1,28 @@
+class Solution {
+    private static final long MOD = 1000000007L;
+    public int subsequenceSum(String s) {
+        int n = s.length();
+        long digitSum = 0;
+        // Calculate the sum of all individual digits
+        for (int i = 0; i < n; i++) {
+            digitSum = (digitSum + (s.charAt(i) - '0')) % MOD;
+        }
+        // Compute 2^(n - 1) % MOD using binary exponentiation
+        long powerOfTwo = modPow(2, n - 1, MOD);
+        // Total contribution = digitSum * 2^(n - 1) % MOD
+        long result = (digitSum * powerOfTwo) % MOD;
+        return (int) result;
+    }
+    private long modPow(long base, long exp, long mod) {
+        long res = 1;
+        base %= mod;
+        while (exp > 0) {
+            if ((exp & 1) == 1) {
+                res = (res * base) % mod;
+            }
+            base = (base * base) % mod;
+            exp >>= 1;
+        }
+        return res;
+    }
+}
