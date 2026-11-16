@@ -1,0 +1,15 @@
+import java.util.Arrays;
+class Solution {
+    public int findKthSmall(int[] arr, int k) {
+        // Sort the array in-place to process removed elements in ascending order
+        Arrays.sort(arr);
+        for (int num : arr) {
+            if (num <= k) {
+                k++;
+            } else {
+                break;
+            }
+        }
+        return k;
+    }
+}
