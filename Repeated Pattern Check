@@ -1,0 +1,30 @@
+class Solution {
+    public boolean findPattern(String s) {
+        int n = s.length();
+        int i = 0;
+        while (i < n) {
+            int xCount = 0;
+            // Count consecutive 'x' characters
+            while (i < n && s.charAt(i) == 'x') {
+                xCount++;
+                i++;
+            }
+            // Every valid block must start with at least one 'x'
+            if (xCount == 0) {
+                return false;
+            }
+            int yCount = 0;
+            // Count consecutive 'y' characters immediately following 'x'
+            while (i < n && s.charAt(i) == 'y') {
+                yCount++;
+                i++;
+            }
+            // Number of 'x's and 'y's in this segment must be equal
+            if (xCount != yCount) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
