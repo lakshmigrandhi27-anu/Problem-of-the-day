@@ -1,0 +1,19 @@
+class Solution {
+    public int minFlips(String s) {
+        int n = s.length();
+        int flipsStartWith0 = 0;
+
+        for (int i = 0; i < n; i++) {
+            // Expected character if string starts with '0' ("010101...")
+            char expected = (i % 2 == 0) ? '0' : '1';
+            if (s.charAt(i) != expected) {
+                flipsStartWith0++;
+            }
+        }
+
+        // Flips for pattern starting with '1' ("101010...") is simply (n - flipsStartWith0)
+        int flipsStartWith1 = n - flipsStartWith0;
+
+        return Math.min(flipsStartWith0, flipsStartWith1);
+    }
+}
