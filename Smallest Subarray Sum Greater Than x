@@ -1,0 +1,20 @@
+class Solution {
+    public int smallestSubWithSum(int[] arr, int x) {
+        int n = arr.length;
+        int minLength = Integer.MAX_VALUE;
+        int currentSum = 0;
+        int left = 0;
+        for (int right = 0; right < n; right++) {
+            // Expand the window to the right
+            currentSum += arr[right];
+            // Shrink the window from the left as long as sum is strictly > x
+            while (currentSum > x) {
+                minLength = Math.min(minLength, right - left + 1);
+                currentSum -= arr[left];
+                left++;
+            }
+        }
+
+        return (minLength == Integer.MAX_VALUE) ? 0 : minLength;
+    }
+}
