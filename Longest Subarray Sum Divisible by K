@@ -1,0 +1,27 @@
+import java.util.HashMap;
+import java.util.Map;
+class Solution {
+    public int longestSubarrayDivK(int[] arr, int k) {
+        Map<Integer, Integer> firstIndex = new HashMap<>();
+        // Base case: remainder 0 at index -1 handles subarrays starting at index 0
+        firstIndex.put(0, -1);
+        long prefixSum = 0;
+        int maxLength = 0;
+        for (int i = 0; i < arr.length; i++) {
+            prefixSum += arr[i];
+            // Normalize remainder to [0, k - 1] to handle negative prefix sums
+            int rem = (int) (((prefixSum % k) + k) % k);
+            if (firstIndex.containsKey(rem)) {
+                int length = i - firstIndex.get(rem);
+                if (length > maxLength) {
+                    maxLength = length;
+                }
+            } else {
+                // Store only the earliest occurrence of this remainder
+                firstIndex.put(rem, i);
+            }
+        }
+
+        return maxLength;
+    }
+}
