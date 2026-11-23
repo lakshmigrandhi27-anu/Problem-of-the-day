@@ -1,0 +1,34 @@
+import java.util.ArrayList;
+import java.util.List;
+class Solution {
+    public char posInfinite(String s, int pos) {
+        long p = pos;
+        long baseLen = s.length();
+        // Store string lengths at each step: lengths.get(i) = length after step i
+        List<Long> lengths = new ArrayList<>();
+        lengths.add(baseLen);
+        int step = 0;
+        while (lengths.get(step) < p) {
+            step++;
+            long nextLen = 2 * lengths.get(step - 1) + step;
+            lengths.add(nextLen);
+        }
+        // Fold position backward from step down to 1
+        for (int i = step; i >= 1; i--) {
+            long prevLen = lengths.get(i - 1);
+            long currLen = lengths.get(i);
+            if (p <= prevLen) {
+                // Position lies in the left prefix S_(i-1)
+                continue;
+            } else if (p <= prevLen + i) {
+                // Position lies in the middle '$' segment of length i
+                return '$';
+            } else {
+                // Position lies in reverse(S_(i-1)); mirror it back to S_(i-1)
+                p = currLen - p + 1;
+            }
+        }
+
+        return s.charAt((int) p - 1);
+    }
+}
