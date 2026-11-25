@@ -1,0 +1,98 @@
+class Solution {
+    private static final long MOD = 1000000007L;
+    public int minTime(int a, int b, int d, int l, int r) {
+        long A = a, B = b, D = d, L_jump = l, R_jump = r;
+        long noJumpTime = getNormalTime(D, A, B);
+        // x = D - j ranges over [X_low, X_high]
+        long X_low = D - R_jump;
+        long X_high = D - L_jump;
+        // Binary search the largest x in [X_low, X_high] where jumping is strictly faster than noJumpTime
+        long low = X_low, high = X_high, bestX = X_low - 1;
+        while (low <= high) {
+            long mid = low + (high - low) / 2;
+            if (getNormalTime(mid, A, B) + 1 < noJumpTime) {
+                bestX = mid;
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+
+        long ans = 0;
+
+        // 1. Range [X_low, bestX]: jumping is optimal -> sum (T(x) + 1)
+        if (bestX >= X_low) {
+            long countJump = (bestX - X_low + 1) % MOD;
+            ans = (ans + sumNormalTime(X_low, bestX, A, B) + countJump) % MOD;
+        }
+
+        // 2. Range [max(X_low, bestX + 1), X_high]: normal movement is optimal -> sum T(D)
+        long noJumpStart = Math.max(X_low, bestX + 1);
+        if (noJumpStart <= X_high) {
+            long countNoJump = (X_high - noJumpStart + 1) % MOD;
+            ans = (ans + countNoJump * (noJumpTime % MOD)) % MOD;
+        }
+
+        return (int) ((ans % MOD + MOD) % MOD);
+    }
+
+    // Minimum normal time T(x) to reach position x >= 0
+    private long getNormalTime(long x, long a, long b) {
+        if (x <= a) {
+            return x;
+        }
+        long g = a - b;
+        long k = (x - a + g - 1) / g;
+        return 2L * k * b + x;
+    }
+
+    // Sum of T(x) for all integers x in [L, R] in O(1) time
+    private long sumNormalTime(long L, long R, long a, long b) {
+        if (L > R) return 0;
+
+        long sumX = sumRange(L, R);
+
+        long start = Math.max(L, a + 1);
+        if (start > R) {
+            return sumX;
+        }
+
+        long g = a - b;
+        long uL = start - a - 1;
+        long uR = R - a - 1;
+
+        long partR = sumFloorDiv(uR, g);
+        long partL = sumFloorDiv(uL - 1, g);
+        long count = (uR - uL + 1) % MOD;
+
+        // Ensure positive modulo after subtraction
+        long sumK = ((partR - partL + MOD) % MOD + count) % MOD;
+
+        long penalty = ((2L * b) % MOD) * sumK % MOD;
+        return (sumX + penalty) % MOD;
+    }
+
+    // Computes sum_{u = 0..N} floor(u / g) modulo MOD in O(1)
+    private long sumFloorDiv(long N, long g) {
+        if (N < 0) return 0;
+        long q = N / g;
+        long rem = N % g;
+
+        long fullBlocks = sumRange(0, q - 1) * (g % MOD) % MOD;
+        long partialBlock = (q % MOD) * ((rem + 1) % MOD) % MOD;
+
+        return (fullBlocks + partialBlock) % MOD;
+    }
+
+    // Computes sum of integers from L to R modulo MOD
+    private long sumRange(long L, long R) {
+        if (L > R) return 0;
+        long n = R - L + 1;
+        long s = L + R;
+        if (n % 2 == 0) {
+            return ((n / 2) % MOD) * (s % MOD) % MOD;
+        } else {
+            return (n % MOD) * ((s / 2) % MOD) % MOD;
+        }
+    }
+}
